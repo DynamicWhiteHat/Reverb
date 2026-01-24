@@ -1,6 +1,6 @@
 Item,Quantity,Link,Price,Comment,,,
 JLCPCB Order,1,Quote,$17.20,PCB+Stencil,,,
-LCSC Order,1,See LCSC BOM,$22.90,PCB Parts,,,
+LCSC Order,1,See LCSC BOM,$24.38,PCB Parts,,,
 Stepper Motor,1,https://www.aliexpress.us/item/2251832816516054.html,$2.73,,,,
 RC522 RFID Reader,1,https://www.aliexpress.us/item/3256805262944828.html,$2.47,,,,
 RFID Tag,1 Pack of 30,https://www.aliexpress.us/item/3256807346917359.html,$3.08,,,,
@@ -9,7 +9,8 @@ Speaker,1,https://www.aliexpress.us/item/3256806860528919.html,$8.12,,,,
 Power Switch,1 Pack of 3,https://www.aliexpress.us/item/3256803938436290.h,$0.81,,,,
 SD Card Reader,1,https://www.aliexpress.us/item/3256805115720436.html,$0.73,,,,
 US5881 Hall Effect Sensor,1 Pack of 10,https://www.aliexpress.us/item/3256806135616417.html,$1.74,,,,
-,,,$64.87,,,,
+M2-M5 Screw Set,1,https://www.amazon.com/mxuteuk-Assortment-Machine-Washers-Printing/dp/B0FM3G5K6H,$7.99,,,,
+,,,$74.24,,,,
 ,,,,,,,
 LCSC,,,,,,,
 Description,Quantity Needed,Mrf#,Minimum Order Qty.,Unit Price(USD),Ext.Price(USD),LCSC#,Product Link
@@ -29,7 +30,7 @@ Diode Independent 40V 1A Surface Mount SOD-123,1,K1N5819HW-7-F,50,0.0086,0.43,C2
 Diode Array 1 Pair Common Cathode 30V 200mA Surface Mount SOT-23,1,BAT54C,50,0.0065,0.33,C727125,https://www.lcsc.com/product-detail/C727125.html
 Connector Header 2 position 2mm Pitch 2A Right Angle -25℃~+85℃,1,S2B-PH-K-S(LF)(SN),20,0.0239,0.48,C173752,https://www.lcsc.com/product-detail/C173752.html
 Connector Header 5 position 2.5mm Pitch 3A Through Hole -25℃~+85℃,1,B5B-XH-A(LF)(SN),5,0.0653,0.33,C157991,https://www.lcsc.com/product-detail/C157991.html
-"2.4GHz ESP32-S3 Chip On-board PCB Antenna -98.2dBm SMD,25.5x18mm RF Transceiver Modules and Modems RoHS",1,ESP32-S3-WROOM-1-N8,1,3.2206,3.22,C2913198,https://www.lcsc.com/product-detail/C2913198.html
+"2.4GHz ESP32-S3R8 On-board PCB Antenna -98.2dBm SMD,25.5x18mm RF Transceiver Modules and Modems RoHS",1,ESP32-S3-WROOM-1-N8R8,1,4.9347,4.93,C2913201,https://www.lcsc.com/product-detail/C2913201.html
 Class D TQFN-16-EP(3x3) Audio Amplifiers RoHS,1,MAX98357AETE+T,1,0.9776,0.98,C910544,https://www.lcsc.com/product-detail/C910544.html
 "SMD-4P,3.7x3.5mm LED Addressable, Specialty RoHS",24,SK6812SMINI,30,0.0412,1.24,C7423118,https://www.lcsc.com/product-detail/C7423118.html
 Tactile Switch SPST 160gf 2mm SMD (SMT) Tab 4mm x 3mm Surface Mount,2,TS-1088-AR02016,10,0.0426,0.43,C720477,https://www.lcsc.com/product-detail/C720477.html
@@ -39,6 +40,6 @@ USB-C (USB TYPE-C) Receptacle Connector 6 Position Surface Mount,2,TYPE-C-31-M-1
 USB-C (USB TYPE-C) Receptacle Connector 16 Position Surface Mount,1,TYPE-C-31-M-12,5,0.16,0.8,C165948,https://www.lcsc.com/product-detail/C165948.html
 5kΩ Thin Film Resistor ±25ppm/℃ ±0.1% 0603 Chip Resistor - Surface Mount RoHS,1,TR0603B5K00P0525Z,20,0.0206,0.41,C3202451,https://www.lcsc.com/product-detail/C3202451.html
 400mΩ ±1% 100mW 0603 Thick Film Resistor,1,FRL0603FR400TS,100,0.0015,0.15,C5126047,https://www.lcsc.com/product-detail/C5126047.html
-,,,,Combined Price,$12.67,,
+,,,,Combined Price,$14.38,,
 ,,,,Shipping,$10.00,,
-,,,,Total Price,$22.67,,
+,,,,Total Price,$24.38,,
