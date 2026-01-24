@@ -66,11 +66,11 @@ The main control board is based on an ESP32-S3 Wroom 1, which is Wifi and Blueto
 | RFID Tag                  | 1 Pack of 30 | https://www.aliexpress.us/item/3256807346917359.html                                   | $3.08  |                                                    |
 | PAJ7620U2 Gesture Sensor  | 1            | https://www.aliexpress.us/item/3256803918726745.html                                   | $5.09  |                                                    |
 | Speaker                   | 1            | https://www.aliexpress.us/item/3256806860528919.html                                   | $8.12  |                                                    |
-| Power Switch              | 1 Pack of 3  | https://www.aliexpress.us/item/3256803938436290.h                                      | $0.81  |                                                    |
-| SD Card Reader            | 1            | https://www.aliexpress.us/item/3256805115720436.html                                   | $0.73  |                                                    |
-| US5881 Hall Effect Sensor | 1 Pack of 10 | https://www.aliexpress.us/item/3256806135616417.html                                   | $1.74  |                                                    |
+| Power Switch              | 1 Pack of 5  | https://www.aliexpress.us/item/3256803938436290.html                                   | $2.12  |                                                    |
+| SD Card Reader            | 1            | https://www.aliexpress.us/item/3256805115720436.html                                   | $0.83  |                                                    |
+| US5881 Hall Effect Sensor | 1 Pack of 10 | https://www.aliexpress.us/item/3256806135616417.html                                   | $1.81  |                                                    |
 | M2-M5 Screw Set           | 1            | https://www.amazon.com/mxuteuk-Assortment-Machine-Washers-Printing/dp/B0FM3G5K6H/?th=1 | $7.99  | From Amazon as AliExpress doesn't sell assortments |
-|                           |              |                                                                                        | $74.24 |                                                    |
+|                           |              |                                                                                        | $75.82 |                                                    |
 
 ### LCSC Bill Of Materials
 | Description                                                                                             | Quantity Needed | Mrf#                | Minimum Order Qty. | Unit Price(USD) | Ext.Price(USD) | LCSC#    | Product Link                                      |
