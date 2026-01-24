@@ -1,5 +1,5 @@
 # Reverb
-A custom Spotify record player. Original idea by AKZ Dev on YouTube.
+A custom record player. Place a disk and have it play. Original idea by AKZ Dev on YouTube.
 
 ## Features:
 - ESP32 S3 Wroom 1 SoM
