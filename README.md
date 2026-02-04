@@ -59,7 +59,7 @@ The main control board is based on an ESP32-S3 Wroom 1, which is Wifi and Blueto
 ## Bill Of Materials
 | Item                      | Quantity     | Link                                                                                   | Price  | Comment                                            |
 |---------------------------|--------------|----------------------------------------------------------------------------------------|--------|----------------------------------------------------|
-| JLCPCB Order              | 1            | Quote                                                                                  | $17.20 | PCB+Stencil                                        |
+| JLCPCB Order              | 1            | Quote                                                                                  | $23.54 | PCB+Stencil                                        |
 | LCSC Order                | 1            | See LCSC BOM                                                                           | $27.68 | PCB Parts                                          |
 | Stepper Motor             | 1            | https://www.aliexpress.us/item/2251832816516054.html                                   | $2.73  |                                                    |
 | RC522 RFID Reader         | 1            | https://www.aliexpress.us/item/3256805262944828.html                                   | $2.47  |                                                    |
@@ -70,7 +70,7 @@ The main control board is based on an ESP32-S3 Wroom 1, which is Wifi and Blueto
 | SD Card Reader            | 1            | https://www.aliexpress.us/item/3256805115720436.html                                   | $0.83  |                                                    |
 | US5881 Hall Effect Sensor | 1 Pack of 10 | https://www.aliexpress.us/item/3256806135616417.html                                   | $1.81  |                                                    |
 | M2-M5 Screw Set           | 1            | https://www.amazon.com/mxuteuk-Assortment-Machine-Washers-Printing/dp/B0FM3G5K6H/?th=1 | $7.99  | From Amazon as AliExpress doesn't sell assortments |
-|                           |              |                                                                                        | $79.12 |                                                    |
+|                           |              |                                                                                        | $85.46 |                                                    |
 
 ### LCSC Bill Of Materials
 | LCSC                                                                                                    |                 |                       |                    |                 |                |          |                                                   |
