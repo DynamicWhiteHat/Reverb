@@ -51,6 +51,11 @@ I saw [this](https://www.youtube.com/watch?v=fBjv4E7mpA4) video on YouTube one d
       <img width="519" height="519" alt="ReverbO" src="https://github.com/user-attachments/assets/97986453-e843-4a7d-be5e-6ed430fb834a" />
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+     <img width="662" height="517" alt="image" src="https://github.com/user-attachments/assets/a7365db8-1cbc-4b39-877d-5fe369915937" />
+    </td>
+  </tr>
 </table>
 
 ## How It Works
