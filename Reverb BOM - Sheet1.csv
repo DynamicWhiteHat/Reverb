@@ -1,16 +1,16 @@
 Item,Quantity,Link,Price,Comment,,,
-JLCPCB Order,1,Quote,$23.54,PCB+Stencil,,,
-LCSC Order,1,See LCSC BOM,$27.68,PCB Parts,,,
-Stepper Motor,1,https://www.aliexpress.us/item/2251832816516054.html,$2.73,,,,
-RC522 RFID Reader,1,https://www.aliexpress.us/item/3256805262944828.html,$2.47,,,,
-RFID Tag,1 Pack of 30,https://www.aliexpress.us/item/3256807346917359.html,$3.08,,,,
+JLCPCB Order,1,Quote,$23.62,PCB+Stencil,,,
+LCSC Order,1,See LCSC BOM,$28.00,PCB Parts,,,
+Stepper Motor,1,https://www.aliexpress.us/item/2251832816516054.html,$2.63,,,,
+RC522 RFID Reader,1,https://www.aliexpress.us/item/3256805262944828.html,$1.46,,,,
+RFID Tag,1 Pack of 30,https://www.aliexpress.us/item/3256807346917359.html,$2.92,,,,
 PAJ7620U2 Gesture Sensor,1,https://www.aliexpress.us/item/3256803918726745.html,$5.09,,,,
 Speaker,1,https://www.aliexpress.us/item/3256806860528919.html,$8.12,,,,
 Power Switch,1 Pack of 3,https://www.aliexpress.us/item/3256803938436290.h,$2.12,,,,
 SD Card Reader,1,https://www.aliexpress.us/item/3256805115720436.html,$0.83,,,,
-US5881 Hall Effect Sensor,1 Pack of 10,https://www.aliexpress.us/item/3256806135616417.html,$1.81,,,,
-M2-M5 Screw Set,1,https://www.amazon.com/mxuteuk-Assortment-Machine-Washers-Printing/dp/B0FM3G5K6H/?th=1,$7.99,From Amazon as AliExpress doesn't sell assortments,,,
-,,,$85.46,,,,
+US5881 Hall Effect Sensor,1 Pack of 10,https://www.aliexpress.us/item/3256806135616417.html,$1.82,,,,
+M2-M5 Screw Set,1,https://www.amazon.com/mxuteuk-Assortment-Machine-Washers-Printing/dp/B0FM3G5K6H/?th=1,$9.99,From Amazon as AliExpress doesn't sell assortments,,,
+,,,$86.58,,,,
 ,,,,,,,
 LCSC,,,,,,,
 Description,Quantity Needed,Mrf#,Minimum Order Qty.,Unit Price(USD),Ext.Price(USD),LCSC#,Product Link
@@ -40,6 +40,6 @@ USB-C (USB TYPE-C) Receptacle Connector 6 Position Surface Mount,2,TYPE-C-31-M-1
 USB-C (USB TYPE-C) Receptacle Connector 16 Position Surface Mount,1,TYPE-C-31-M-12,5,0.1908,0.95,C165948,https://www.lcsc.com/product-detail/C165948.html
 5kΩ Thin Film Resistor ±25ppm/℃ ±0.1% 0603 Chip Resistor - Surface Mount RoHS,1,TR0603B5K00P0525Z,20,0.028,0.56,C3202451,https://www.lcsc.com/product-detail/C3202451.html
 400mΩ ±1% 100mW 0603 Thick Film Resistor,1,FRL0603FR400TS,100,0.0035,0.35,C5126047,https://www.lcsc.com/product-detail/C5126047.html
-,,,,Combined Price,$17.69,,
+,,,,Combined Price,$18.23,,
 ,,,,Shipping,$9.99,,
 ,,,,Total Price,$27.68,,
