@@ -4,7 +4,7 @@
 
 **A custom ESP32 record player. Place a disk and it plays.**
 
-![ESP32-S3](https://img.shields.io/badge/MCU-ESP32--S3-E7352C?style=flat-square)
+![ESP32-S3](https://img.shields.io/badge/MCU-ESP32--S3-E7352C?style=flat-square&logo=espressif)
 ![KiCad](https://img.shields.io/badge/PCB-KiCad-314CB0?style=flat-square)
 ![Fusion](https://img.shields.io/badge/CAD-Fusion%20360-orange?style=flat-square&labelColor=grey&color=orange)
 
