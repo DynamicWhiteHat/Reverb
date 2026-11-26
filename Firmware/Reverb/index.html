@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reverb OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0e0d0b;
+    --surface: #1a1814;
+    --border:  #2e2b25;
+    --accent:  #c9a84c;
+    --accent2: #7c6030;
+    --text:    #e8e0d0;
+    --muted:   #7a7060;
+    --danger:  #c04a3a;
+    --success: #4a8c5c;
+    --radius:  6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.35;
+  }
+  header {
+    border-bottom: 1px solid var(--border); padding: 20px 32px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .header-left { display: flex; align-items: baseline; gap: 16px; }
+  header h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-style: italic; color: var(--accent); letter-spacing: -0.5px; }
+  header span { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tab-btns { display: flex; gap: 4px; }
+  .tab-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 14px; border-radius: var(--radius); cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
+  .tab-btn.active { border-color: var(--accent); color: var(--accent); }
+  .tab-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+  .status-bar { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .status-item { flex: 1; padding: 14px 20px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+  .status-item:last-child { border-right: none; }
+  .status-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .status-value { font-size: 15px; font-weight: 500; }
+  .status-value.on  { color: var(--success); }
+  .status-value.off { color: var(--danger); }
+  .status-value.playing { color: var(--accent); font-family: 'DM Serif Display', serif; font-style: italic; font-size: 16px; }
+  .bat-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+  .bat-fill { height: 100%; border-radius: 2px; transition: width 0.5s; background: var(--success); }
+  .bat-fill.low { background: var(--danger); }
+  .bat-fill.mid { background: var(--accent); }
+  .vol-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+  .vol-row span { font-size: 11px; color: var(--muted); min-width: 24px; }
+  input[type="range"] { flex: 1; -webkit-appearance: none; height: 3px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+  .tab { display: none; flex: 1; }
+  .tab.active { display: flex; flex-direction: column; }
+
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; }
+  @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+  .panel { border-right: 1px solid var(--border); padding: 28px 32px; }
+  .panel:last-child { border-right: none; }
+  .panel-title { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .panel-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .disk-list { display: flex; flex-direction: column; gap: 8px; }
+  .disk-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; gap: 12px; transition: border-color 0.15s; }
+  .disk-card:hover { border-color: var(--accent2); }
+  .disk-card.active { border-color: var(--accent); }
+  .disk-icon { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border); background: radial-gradient(circle at 50% 50%, var(--bg) 28%, var(--border) 29%, var(--border) 32%, var(--surface) 33%); flex-shrink: 0; }
+  .disk-icon.spinning { animation: spin 2s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .disk-info { flex: 1; min-width: 0; }
+  .disk-label { font-family: 'DM Serif Display', serif; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .disk-uid { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .disk-actions { display: flex; gap: 6px; }
+
+  .btn { background: none; border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 10px; border-radius: var(--radius); cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 500; }
+  .btn.primary:hover { background: #d4b060; border-color: #d4b060; }
+  .btn.active-btn { border-color: var(--success); color: var(--success); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type="text"], input[type="password"], select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; padding: 9px 12px; border-radius: var(--radius); outline: none; transition: border-color 0.15s; appearance: none; }
+  input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--accent); }
+  .scan-row { display: flex; gap: 8px; align-items: flex-end; }
+  .scan-row input, .scan-row select { flex: 1; }
+  .track-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .track-row { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 8px; }
+  .track-num { color: var(--accent); font-size: 11px; min-width: 18px; text-align: right; }
+  .track-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .skip-row { display: flex; gap: 6px; }
+  .btn.mini { padding: 2px 7px; font-size: 10px; }
+  .badge { display: inline-block; border: 1px solid var(--accent2); color: var(--accent); border-radius: 10px; padding: 0 7px; font-size: 10px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .scanning { animation: pulse 0.8s infinite; color: var(--accent); }
+
+  .file-item { padding: 8px 10px; border-radius: var(--radius); cursor: pointer; transition: background 0.1s; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .file-item:hover { background: var(--surface); color: var(--text); }
+  .file-item.selected { background: var(--surface); color: var(--accent); border: 1px solid var(--accent2); }
+  .file-item::before { content: '♫'; font-size: 10px; opacity: 0.6; }
+
+  .settings-panel { padding: 28px 32px; max-width: 520px; }
+  .setting-section { margin-bottom: 32px; }
+  .setting-note { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+  .info-row { display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 12px; }
+  .info-row div { display: flex; justify-content: space-between; }
+  .info-row span { color: var(--text); }
+
+  #toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 10000; }
+  .toast { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 10px 16px; border-radius: var(--radius); font-size: 12px; animation: slideIn 0.2s ease; max-width: 280px; }
+  .toast.error { border-left-color: var(--danger); }
+  .toast.success { border-left-color: var(--success); }
+  @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .empty-state { color: var(--muted); font-size: 12px; text-align: center; padding: 32px 0; font-style: italic; }
+  .statusbar { border-top: 1px solid var(--border); padding: 8px 32px; display: flex; gap: 24px; font-size: 11px; color: var(--muted); }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-right: 6px; vertical-align: middle; }
+  .dot.ok { background: var(--success); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Reverb OS</h1>
+    <span>disk mapping interface</span>
+  </div>
+  <div class="tab-btns">
+    <button class="tab-btn active" onclick="switchTab('disks', this)">Disks</button>
+    <button class="tab-btn" onclick="switchTab('settings', this)">Settings</button>
+  </div>
+</header>
+
+<div class="status-bar">
+  <div class="status-item">
+    <div class="status-label">Now Playing</div>
+    <div class="status-value playing" id="now-playing">—</div>
+    <div class="skip-row" id="skip-row" style="display:none;">
+      <button class="btn mini" id="prev-btn" onclick="skipTrack('prev')">⏮ Prev</button>
+      <button class="btn mini" id="next-btn" onclick="skipTrack('next')">Next ⏭</button>
+    </div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">Magnet</div>
+    <div class="status-value off" id="hall-val">NONE</div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">Volume</div>
+    <div class="vol-row">
+      <span id="vol-label">15</span>
+      <input type="range" min="0" max="21" value="15" id="vol-slider" oninput="onVolume(this.value)"/>
+      <span>21</span>
+    </div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">Battery</div>
+    <div class="status-value" id="bat-val">—%</div>
+    <div class="bat-bar"><div class="bat-fill" id="bat-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- DISKS TAB -->
+<div class="tab active" id="tab-disks">
+  <div class="layout">
+    <div class="panel">
+      <div class="panel-title">Mapped Disks</div>
+      <div class="disk-list" id="disk-list"><div class="empty-state">Loading...</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">New Mapping</div>
+      <div class="form-group">
+        <label>Disk Label</label>
+        <input type="text" id="label-input" placeholder="e.g. Dark Side of the Moon"/>
+      </div>
+      <div class="form-group">
+        <label>Disk UID</label>
+        <div class="scan-row">
+          <input type="text" id="uid-input" placeholder="xx:xx:xx:xx"/>
+          <button class="btn" id="scan-btn" onclick="startScan()">Scan</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Disk Type</label>
+        <select id="type-select" onchange="onTypeChange()">
+          <option value="single">Single track</option>
+          <option value="album">Album (plays tracks in order)</option>
+        </select>
+      </div>
+      <div class="form-group" id="single-group">
+        <label>Audio File</label>
+        <select id="file-select"><option value="">— select a file —</option></select>
+      </div>
+      <div class="form-group" id="album-group" style="display:none;">
+        <label>Album Tracks <span id="track-count"></span></label>
+        <div class="scan-row">
+          <select id="track-add-select"><option value="">— add a track —</option></select>
+          <button class="btn" onclick="addTrackFromSelect()">Add</button>
+        </div>
+        <div class="track-list" id="track-list"></div>
+        <p class="setting-note">Plays top to bottom. You can also click songs under "Files on SD" to add them.</p>
+      </div>
+      <button class="btn primary" onclick="saveMapping()" style="width:100%; margin-top:4px;">Save Mapping</button>
+      <div class="divider"></div>
+      <div class="panel-title">Files on SD</div>
+      <div id="file-list"><div class="empty-state">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS TAB -->
+<div class="tab" id="tab-settings">
+  <div class="settings-panel">
+
+    <div class="setting-section">
+      <div class="panel-title">Visualizer</div>
+      <div class="form-group">
+        <label>NeoPixels</label>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn active-btn" id="neo-toggle" onclick="toggleNeopixel()">On</button>
+          <span style="color:var(--muted); font-size:11px;" id="neo-status">LEDs enabled</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Brightness</label>
+        <div class="vol-row">
+          <span>0</span>
+          <input type="range" min="0" max="255" value="80" id="brightness-slider" oninput="onBrightness(this.value)"/>
+          <span>255</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-section">
+      <div class="panel-title">WiFi Credentials</div>
+      <div class="form-group">
+        <label>Network Name (SSID)</label>
+        <input type="text" id="wifi-ssid" placeholder="Your WiFi name"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="wifi-password" placeholder="Your WiFi password"/>
+      </div>
+      <button class="btn primary" onclick="saveWifi()">Save to SD Card</button>
+      <p class="setting-note">Saved to <code>/wifi.json</code> on SD. Restart device after saving.</p>
+    </div>
+
+    <div class="setting-section">
+      <div class="panel-title">Device Info</div>
+      <div class="info-row">
+        <div>IP Address <span id="info-ip">—</span></div>
+        <div>SD Card <span id="info-sd">—</span></div>
+        <div>Battery <span id="info-bat">—</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="statusbar">
+  <span><span class="dot" id="wifi-dot"></span><span id="wifi-status">Connecting...</span></span>
+  <span><span class="dot" id="sd-dot"></span><span id="sd-status">SD...</span></span>
+  <span id="mapping-count"></span>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+let scanInterval      = null;
+let volDebounce       = null;
+let brightnessDebounce = null;
+let currentLabel      = '';
+let neoOn             = true;
+let allFiles          = [];
+let albumTracks       = [];
+let diskType          = 'single';
+
+window.addEventListener('load', () => {
+  renderTracks();
+  fetchStatus();
+  fetchMappings();
+  fetchFiles();
+  setInterval(fetchStatus, 1000);
+});
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+async function fetchStatus() {
+  try {
+    const d = await fetch('/api/status').then(r => r.json());
+
+    document.getElementById('wifi-dot').className     = 'dot ok';
+    document.getElementById('wifi-status').textContent = 'WiFi: ' + d.ip;
+    document.getElementById('sd-dot').className       = d.sd ? 'dot ok' : 'dot';
+    document.getElementById('sd-status').textContent  = d.sd ? 'SD: mounted' : 'SD: error';
+
+    const hv = document.getElementById('hall-val');
+    hv.textContent = d.hall ? 'DETECTED' : 'NONE';
+    hv.className   = 'status-value ' + (d.hall ? 'on' : 'off');
+
+    const pct = d.battery;
+    document.getElementById('bat-val').textContent = pct + '%';
+    const fill = document.getElementById('bat-fill');
+    fill.style.width = pct + '%';
+    fill.className = 'bat-fill' + (pct < 20 ? ' low' : pct < 50 ? ' mid' : '');
+
+    const np = document.getElementById('now-playing');
+    if (d.playing && d.label) {
+      np.textContent = d.label + (d.tracks > 1 ? '  ·  ' + d.track + '/' + d.tracks : '');
+      if (d.label !== currentLabel) { currentLabel = d.label; fetchMappings(); }
+    } else {
+      np.textContent = '—';
+      currentLabel = '';
+    }
+
+    // Skip buttons only for albums that are currently playing
+    const showSkip = d.playing && d.tracks > 1;
+    document.getElementById('skip-row').style.display = showSkip ? 'flex' : 'none';
+    document.getElementById('next-btn').disabled = !(showSkip && d.track < d.tracks);
+
+    const slider = document.getElementById('vol-slider');
+    if (Math.abs(slider.value - d.volume) > 1) {
+      slider.value = d.volume;
+      document.getElementById('vol-label').textContent = d.volume;
+    }
+
+    // Sync neo state from device
+    if (d.neoOn !== undefined) {
+      neoOn = d.neoOn;
+      updateNeoButton();
+    }
+    if (d.neoBrightness !== undefined) {
+      document.getElementById('brightness-slider').value = d.neoBrightness;
+    }
+
+    document.getElementById('info-ip').textContent  = d.ip;
+    document.getElementById('info-sd').textContent  = d.sd ? 'Mounted' : 'Not found';
+    document.getElementById('info-bat').textContent = pct + '%';
+  } catch(e) {}
+}
+
+async function skipTrack(dir) {
+  try {
+    await fetch('/api/' + dir, { method: 'POST' });
+    fetchStatus();
+  } catch(e) { toast('Skip failed', 'error'); }
+}
+
+function onVolume(val) {
+  document.getElementById('vol-label').textContent = val;
+  clearTimeout(volDebounce);
+  volDebounce = setTimeout(() => {
+    fetch('/api/volume', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({volume: parseInt(val)}) });
+  }, 150);
+}
+
+function updateNeoButton() {
+  const btn = document.getElementById('neo-toggle');
+  const status = document.getElementById('neo-status');
+  if (neoOn) {
+    btn.textContent = 'On';
+    btn.className = 'btn active-btn';
+    status.textContent = 'LEDs enabled';
+  } else {
+    btn.textContent = 'Off';
+    btn.className = 'btn';
+    status.textContent = 'LEDs disabled';
+  }
+}
+
+function toggleNeopixel() {
+  neoOn = !neoOn;
+  updateNeoButton();
+  sendNeoSettings();
+}
+
+function onBrightness(val) {
+  clearTimeout(brightnessDebounce);
+  brightnessDebounce = setTimeout(() => sendNeoSettings(), 150);
+}
+
+function sendNeoSettings() {
+  const brightness = parseInt(document.getElementById('brightness-slider').value);
+  fetch('/api/neopixel', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({on: neoOn, brightness})
+  });
+}
+
+async function fetchMappings() {
+  try {
+    const d = await fetch('/api/mappings').then(r => r.json());
+    const keys = Object.keys(d);
+    document.getElementById('mapping-count').textContent = keys.length + ' disks mapped';
+    const el = document.getElementById('disk-list');
+    if (!keys.length) { el.innerHTML = '<div class="empty-state">No disks mapped yet.</div>'; return; }
+    el.innerHTML = keys.map(uid => {
+      const active = d[uid].label === currentLabel;
+      const tracks = Array.isArray(d[uid].tracks) ? d[uid].tracks : [];
+      const isAlbum = tracks.length > 1;
+      const sub = isAlbum ? `${uid} &nbsp;·&nbsp; ${tracks.length} tracks` : `${uid} &nbsp;·&nbsp; ${esc(d[uid].file || '')}`;
+      return `<div class="disk-card ${active ? 'active' : ''}">
+        <div class="disk-icon ${active ? 'spinning' : ''}"></div>
+        <div class="disk-info">
+          <div class="disk-label">${esc(d[uid].label || 'Unlabeled')}${isAlbum ? '<span class="badge">album</span>' : ''}</div>
+          <div class="disk-uid">${sub}</div>
+        </div>
+        <div class="disk-actions">
+          <button class="btn" onclick="editMapping('${uid}')">Edit</button>
+          <button class="btn danger" onclick="deleteMapping('${uid}')">Del</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { toast('Failed to load mappings', 'error'); }
+}
+
+async function fetchFiles() {
+  try {
+    const files = await fetch('/api/files').then(r => r.json());
+    allFiles = files;
+    const select = document.getElementById('file-select');
+    const addSel = document.getElementById('track-add-select');
+    const list   = document.getElementById('file-list');
+    const opts = files.map(f => `<option value="${esc(f)}">${esc(f)}</option>`).join('');
+    select.innerHTML = '<option value="">— select a file —</option>' + opts;
+    addSel.innerHTML = '<option value="">— add a track —</option>' + opts;
+    list.innerHTML = files.length
+      ? files.map(f => `<div class="file-item" onclick="pickFile('${esc(f)}')">${esc(f)}</div>`).join('')
+      : '<div class="empty-state">No .wav files found on SD.</div>';
+  } catch(e) { toast('Failed to load files', 'error'); }
+}
+
+function pickFile(name) {
+  if (diskType === 'album') addTrack(name);
+  else selectFile(name);
+}
+
+function setType(type) {
+  diskType = type;
+  document.getElementById('type-select').value = type;
+  document.getElementById('single-group').style.display = type === 'single' ? '' : 'none';
+  document.getElementById('album-group').style.display  = type === 'album'  ? '' : 'none';
+  document.querySelectorAll('.file-item').forEach(el => el.classList.remove('selected'));
+  renderTracks();
+}
+
+function onTypeChange() { setType(document.getElementById('type-select').value); }
+
+function addTrack(name) {
+  if (!name) return;
+  if (albumTracks.length >= 40) { toast('Max 40 tracks per album', 'error'); return; }
+  albumTracks.push(name);
+  renderTracks();
+}
+
+function addTrackFromSelect() {
+  const sel = document.getElementById('track-add-select');
+  addTrack(sel.value);
+  sel.value = '';
+}
+
+function moveTrack(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= albumTracks.length) return;
+  [albumTracks[i], albumTracks[j]] = [albumTracks[j], albumTracks[i]];
+  renderTracks();
+}
+
+function removeTrack(i) {
+  albumTracks.splice(i, 1);
+  renderTracks();
+}
+
+function renderTracks() {
+  const el = document.getElementById('track-list');
+  document.getElementById('track-count').textContent = albumTracks.length ? '(' + albumTracks.length + ')' : '';
+  if (!albumTracks.length) { el.innerHTML = '<div class="empty-state" style="padding:14px 0;">No tracks added yet.</div>'; return; }
+  el.innerHTML = albumTracks.map((t, i) => `<div class="track-row">
+      <span class="track-num">${i + 1}</span>
+      <span class="track-name">${esc(t)}</span>
+      <button class="btn mini" onclick="moveTrack(${i}, -1)" ${i === 0 ? 'disabled' : ''}>▲</button>
+      <button class="btn mini" onclick="moveTrack(${i}, 1)" ${i === albumTracks.length - 1 ? 'disabled' : ''}>▼</button>
+      <button class="btn mini danger" onclick="removeTrack(${i})">✕</button>
+    </div>`).join('');
+}
+
+function selectFile(name) {
+  document.getElementById('file-select').value = name;
+  document.querySelectorAll('.file-item').forEach(el => el.classList.toggle('selected', el.textContent === name));
+}
+
+async function startScan() {
+  const btn = document.getElementById('scan-btn');
+  document.getElementById('uid-input').value = '';
+  btn.textContent = 'Scanning...';
+  btn.classList.add('scanning');
+  btn.disabled = true;
+  await fetch('/api/scan/start', { method: 'POST' });
+  let attempts = 0;
+  scanInterval = setInterval(async () => {
+    if (++attempts > 40) { stopScan(); toast('Scan timed out', 'error'); return; }
+    const d = await fetch('/api/scan/result').then(r => r.json());
+    if (d.uid && d.uid !== '') { stopScan(); document.getElementById('uid-input').value = d.uid; toast('Scanned: ' + d.uid, 'success'); }
+  }, 500);
+}
+
+function stopScan() {
+  clearInterval(scanInterval);
+  const btn = document.getElementById('scan-btn');
+  btn.textContent = 'Scan';
+  btn.classList.remove('scanning');
+  btn.disabled = false;
+}
+
+async function saveMapping() {
+  const label = document.getElementById('label-input').value.trim();
+  const uid   = document.getElementById('uid-input').value.trim();
+  const isAlbum = diskType === 'album';
+  const file  = isAlbum ? (albumTracks[0] || '') : document.getElementById('file-select').value;
+  if (!uid)   { toast('UID required', 'error'); return; }
+  if (!file)  { toast(isAlbum ? 'Add at least one track' : 'Select an audio file', 'error'); return; }
+  if (!label) { toast('Enter a label', 'error'); return; }
+  const payload = isAlbum ? {uid, label, file, tracks: albumTracks} : {uid, label, file};
+  const r = await fetch('/api/mappings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  if (r.ok) {
+    toast('Saved!', 'success');
+    document.getElementById('label-input').value = '';
+    document.getElementById('uid-input').value   = '';
+    document.getElementById('file-select').value = '';
+    albumTracks = [];
+    setType('single');
+    fetchMappings();
+  } else { toast(r.status === 507 ? 'Too many tracks for device memory' : 'Save failed', 'error'); }
+}
+
+async function editMapping(uid) {
+  const d = await fetch('/api/mappings').then(r => r.json());
+  const m = d[uid]; if (!m) return;
+  document.getElementById('uid-input').value   = uid;
+  document.getElementById('label-input').value = m.label || '';
+  if (Array.isArray(m.tracks) && m.tracks.length > 1) {
+    albumTracks = m.tracks.slice();
+    setType('album');
+  } else {
+    albumTracks = [];
+    setType('single');
+    document.getElementById('file-select').value = m.file || '';
+  }
+  toast('Editing "' + (m.label || uid) + '"', 'success');
+}
+
+async function deleteMapping(uid) {
+  const r = await fetch('/api/mappings/' + encodeURIComponent(uid), { method: 'DELETE' });
+  if (r.ok) { toast('Deleted', 'success'); fetchMappings(); }
+  else toast('Delete failed', 'error');
+}
+
+async function saveWifi() {
+  const ssid     = document.getElementById('wifi-ssid').value.trim();
+  const password = document.getElementById('wifi-password').value;
+  if (!ssid) { toast('SSID required', 'error'); return; }
+  const r = await fetch('/api/wifi', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ssid, password}) });
+  if (r.ok) toast('WiFi saved — restart to connect', 'success');
+  else toast('Failed to save WiFi', 'error');
+}
+
+function toast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

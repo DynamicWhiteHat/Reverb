@@ -1,3 +1,6 @@
+> [!NOTE]
+> This PCB has many faults that required me to rewire many connections by hand. I strongly advice against ordering the PCBs in this repository if you don't have prior experience. I may or may not update the files in the future.
+
 # Reverb
 A custom record player. Place a disk and have it play. Original idea by AKZ Dev on YouTube.
 
@@ -5,10 +8,11 @@ A custom record player. Place a disk and have it play. Original idea by AKZ Dev 
 - ESP32 S3 Wroom 1 SoM
 - 8Ω 10W Speaker
 - Disks correspond to songs through an RFID reader
-- Gesture sensor for touch-free volume control
+- Gesture sensor for touch-free volume control (WIP)
 - Working stylus that can start and stop music
 - 3x8 audio visualizer array
 - 2x USB out: 3.0 A at 5V
+- Single and playlist options
 
 ## Why I designed this project
 
@@ -59,7 +63,7 @@ I saw [this](https://www.youtube.com/watch?v=fBjv4E7mpA4) video on YouTube one d
 </table>
 
 ## How It Works
-The main control board is based on an ESP32-S3 Wroom 1, which is Wifi and Bluetooth enabled. This allows me to connect the SoM to my phone or other device running Spotify. Using the web API, I can control music that plays from my device. Reverb also uses a MAX98357A I2S amplifier that is wired to an 8Ω 10W speaker, allowing audio playback from the music player instead of the device. Additionally, a 3x8 SK6812 Mini NeoPixel array is mounted on the front of the case with a thin wall, allowing audio playback to be visualized. The PAJ7620U2 gesture sensor, located under the REVERB logo on the case, can detect gestures to increase or decrease volume, skip tracks, and perform other tasks. Finally, the main component in the whole design is the RC522 RFID sensor, which picks up data from the RFID stickers located within the 3D printed disks. This allows each disk to be mapped to a song, allowing playback that feels real.
+The main control board is based on an ESP32-S3 Wroom 1, which is Wifi and Bluetooth enabled. WAV files are loaded onto an SD card, along with an html file for the ESP32 to run. Reverb also uses a MAX98357A I2S amplifier that is wired to an 8Ω 10W speaker, allowing audio playback from the music player instead of the device. Additionally, a 3x8 SK6812 Mini NeoPixel array is mounted on the front of the case with a thin wall, allowing audio playback to be visualized. The PAJ7620U2 gesture sensor, located under the REVERB logo on the case, can detect gestures to increase or decrease volume, skip tracks, and perform other tasks. Finally, the main component in the whole design is the RC522 RFID sensor, which picks up data from the RFID stickers located within the 3D printed disks. This allows each disk to be mapped to a song, allowing playback that feels real.
 
 ## Bill Of Materials
 | Item                      | Quantity     | Link                                                                                   | Price  | Comment                                            |
